@@ -1,12 +1,37 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+var mongoose = require('mongoose');
+var passport = require('passport');
+var passportHttp = require('passport-http');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+/* DB */
+var dbUrl = 'mongodb://localhost:27017/';
+var dbName = 'loggen_dbcontext';
+mongoose.connect(dbUrl + dbName);
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log(`Database connected at ${dbUrl} :: ${dbName}`);
+});
+
+passport.use(new passportHttp.BasicStrategy(
+  function(username, password, done) {
+    User.findOne({ username: username }, function (err, user) {
+      if (err) { return done(err); }
+      if (!user) { return done(null, false); }
+      if (!user.validPassword(password)) { return done(null, false); }
+      return done(null, user);
+    });
+  }
+));
+
+/* START EXPRESS SERVER */
 var app = express();
 
 // view engine setup
