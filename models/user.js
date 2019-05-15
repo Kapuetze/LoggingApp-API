@@ -9,8 +9,9 @@ var userSchema = new Schema({
         first: String,
         last: String
     },
-    role: { type: String },
-    creationDate: { type: Date }
+    role: { type: String },  
+    creationDate: { type: Date },
+    logs: [{ type: Schema.Types.ObjectId, ref: 'Log' }]
 });
 
 userSchema.methods.encryptPassword = function(password){
