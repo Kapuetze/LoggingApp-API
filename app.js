@@ -2,8 +2,6 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var mongoose = require('mongoose');
-var passport = require('passport');
-var passportHttp = require('passport-http');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
@@ -21,16 +19,8 @@ db.once('open', function() {
   console.log(`Database connected at ${dbUrl} :: ${dbName}`);
 });
 
-passport.use(new passportHttp.BasicStrategy(
-  function(username, password, done) {
-    User.findOne({ email: username }, function (err, user) {
-      if (err) { return done(err); }
-      if (!user) { return done(null, false); }
-      if (!user.validPassword(password)) { return done(null, false); }
-      return done(null, user);
-    });
-  }
-));
+//passport strategies
+require('./core/passport.js')
 
 /* START EXPRESS SERVER */
 var app = express();
@@ -44,6 +34,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json()) 
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
