@@ -23,7 +23,7 @@ db.once('open', function() {
 
 passport.use(new passportHttp.BasicStrategy(
   function(username, password, done) {
-    User.findOne({ username: username }, function (err, user) {
+    User.findOne({ email: username }, function (err, user) {
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
       if (!user.validPassword(password)) { return done(null, false); }
