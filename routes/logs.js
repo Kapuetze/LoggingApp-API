@@ -11,12 +11,12 @@ function(req, res, next) {
 
 	// Creating one user.
 	var log = new Log ({
-		user: req.user,
+		user: req.user._id,
+		label: req.body.label,
 		content: req.body.content,
 		creationDate: Date.now()
 	});
 
-	console.log(log);
 	// Saving it to the database.
 	log.save(function(err, result){
 		if (err) {
@@ -34,7 +34,11 @@ function(req, res, next) {
 
 	//console.log(req.user);
 	Log.find({ user: req.user }, function (err, logs) {
-		res.json(logs);
+    if(err){
+      res.json({ status: "error", message: err});
+    }else{
+      res.json(logs);
+    }
 	});	
 });
 
