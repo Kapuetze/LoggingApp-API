@@ -1,8 +1,8 @@
 var express = require('express');
 var passport = require('passport');
 var router = express.Router();
-var User = require('../models/user.js');
-var Log = require('../models/log.js');
+var User = require(gBase_dir + '/models/user.js');
+var Log = require(gBase_dir + '/models/log.js');
 
 /* GET home page. */
 router.post('/', 

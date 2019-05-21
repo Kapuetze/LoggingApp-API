@@ -1,0 +1,25 @@
+{
+    "development": {
+        "config_id": "development",
+        "app_name": "my app",
+        "app_desc": "my app desc",
+        "node_port": 3000,
+        "json_indentation": 4,
+        "jwtsecret": "JONAS2018SECRET",
+        "database": "loggen_dbcontext"
+    },
+    "testing": {
+        "config_id": "testing",
+        "database": "my-app-db-test"
+    },
+    "staging": {
+        "config_id": "staging",
+        "node_port": 8080,
+        "database": "my-app-db-stag"
+    },
+    "production": {
+        "config_id": "production",
+        "node_port": 8080,
+        "database": "my-app-db-prod"
+    }
+}
