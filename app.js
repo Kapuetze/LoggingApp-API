@@ -3,7 +3,9 @@ var express = require('express');
 var path = require('path');
 var mongoose = require('mongoose');
 var cookieParser = require('cookie-parser');
+var validator = require('express-validator');
 var logger = require('morgan');
+var cors = require('cors');
 const _ = require('lodash');
 
 // module variables
@@ -21,7 +23,7 @@ global.gConfig = finalConfig;
 global.gBase_dir = __dirname;
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var userRouter = require('./routes/user');
 var logRouter = require('./routes/logs');
 
 /* DB */
@@ -40,6 +42,12 @@ require('./core/passport.js')
 /* START EXPRESS SERVER */
 var app = express();
 
+//allow cross origin requests from angular app
+app.use(cors({
+  origin: ["http://localhost:4200", "http://127.0.0.1:4200"],
+  credentials: true
+}));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -49,10 +57,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json()) 
+app.use(express.json());
+app.use(validator());
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', userRouter);
 app.use('/logs', logRouter);
 
 // catch 404 and forward to error handler
