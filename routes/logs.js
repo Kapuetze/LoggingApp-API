@@ -4,12 +4,12 @@ var router = express.Router();
 var User = require(gBase_dir + '/models/user.js');
 var Log = require(gBase_dir + '/models/log.js');
 
-/* GET home page. */
+/* CREATE a new log entry. */
 router.post('/', 
-passport.authenticate('basic', { session: false }),    
+passport.authenticate(['basic', 'all'], { session: false }),    
 function(req, res, next) {
 
-	// Creating one user.
+	// Creating one log.
 	var log = new Log ({
 		user: req.user._id,
 		label: req.body.label,
@@ -27,9 +27,9 @@ function(req, res, next) {
 	});
 });
 
-/* GET home page. */
+/* GET all logs. */
 router.get('/', 
-passport.authenticate('basic', { session: false }),    
+passport.authenticate(['basic', 'all'], { session: false }),    
 function(req, res, next) {
 
 	//console.log(req.user);
