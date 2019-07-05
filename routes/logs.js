@@ -8,22 +8,29 @@ var Log = require(gBase_dir + '/models/log.js');
 router.post('/', 
 passport.authenticate(['basic', 'all'], { session: false }), 
 async (req, res, next) => {
-	// Creating one log.
-	var log = new Log ({
-		user: req.user._id,
-		label: req.body.label,
-		content: req.body.content,
-		creationDate: Date.now()
-	});
 
-	// Saving it to the database.
-	log.save(function(err, result){
-		if (err) {
-			res.json({ status: "error", message: err});
-		} else {
-			res.json({ status: "success", message: "Log saved successfully."});
-		}
-    });
+    //only add log if it has contents
+    if (req.body.content){
+        // Creating one log.
+        var log = new Log ({
+            user: req.user._id,
+            title: req.body.title,
+            label: req.body.label,
+            content: req.body.content,
+            creationDate: Date.now()
+        });
+
+        // Saving it to the database.
+        log.save(function(err, result){
+            if (err) {
+                res.json({ status: "error", message: err});
+            } else {
+                res.json({ status: "success", message: "Log saved successfully."});
+            }
+        });
+    }else{
+        res.status(400).json({ status: "error", message: "Please provide a content body."});
+    }
 });
 
 /* GET all logs. */
