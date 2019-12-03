@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 var passport = require('passport');
-var User = require(gBase_dir + '/models/user.js');
+var User = require(gBase_dir + '/dal/models/user.js');
 
 /* GET users listing. */
 router.post('/register', function(req, res, next) {
@@ -11,6 +11,7 @@ router.post('/register', function(req, res, next) {
             res.json(err);
         }
         if (user) { 
+            user.password = "";
             const token = jwt.sign(JSON.parse(JSON.stringify(user)), gConfig.jwtsecret);
             return res.json({ user, token }); 
         }       
@@ -25,6 +26,7 @@ router.post('/login', function(req, res, next) {
             res.json(err);
         }
         if (user) { 
+            user.password = "";
             const token = jwt.sign(JSON.parse(JSON.stringify(user)), gConfig.jwtsecret);
             return res.json({ user, token, expiration: 100000 }); 
         }       

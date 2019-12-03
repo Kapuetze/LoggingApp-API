@@ -22,9 +22,9 @@ global.gConfig = finalConfig;
 
 global.gBase_dir = __dirname;
 
-var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
 var logRouter = require('./routes/logs');
+var containerRouter = require('./routes/container')
 
 /* DB */
 var dbUrl = 'mongodb://localhost:27017/';
@@ -60,8 +60,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(validator());
 
-app.use('/', indexRouter);
 app.use('/user', userRouter);
+app.use('/container', containerRouter);
 app.use('/logs', logRouter);
 
 // catch 404 and forward to error handler

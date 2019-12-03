@@ -1,6 +1,6 @@
 var passport = require('passport');
 var passportHttp = require('passport-http');
-var User = require('../models/user.js');
+var User = require('../dal/models/user.js');
 var localStrategy = require('passport-local').Strategy;
 const passportJWT = require("passport-jwt");
 const JWTStrategy   = passportJWT.Strategy;

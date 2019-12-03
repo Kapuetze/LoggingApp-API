@@ -1,8 +1,8 @@
 var express = require('express');
 var passport = require('passport');
 var router = express.Router();
-var User = require(gBase_dir + '/models/user.js');
-var Log = require(gBase_dir + '/models/log.js');
+var User = require(gBase_dir + '/dal/models/user.js');
+var Log = require(gBase_dir + '/dal/models/log.js');
 
 /* CREATE a new log entry. */
 router.post('/', 
