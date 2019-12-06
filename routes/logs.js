@@ -1,9 +1,9 @@
 var express = require('express');
 var passport = require('passport');
 var router = express.Router();
-var User = require(gBase_dir + '/dal/models/user.js');
-var Log = require(gBase_dir + '/dal/models/log.js');
-var Container = require(gBase_dir + '/dal/models/container.js');
+
+var Model = require(gBase_dir + '/dal/models/models.module.js');
+var DataContext = require(gBase_dir + '/dal/repos/datacontext.js');
 
 /* CREATE a new log entry. */
 router.post('/', 
@@ -22,10 +22,10 @@ async (req, res, next) => {
         return;
     }
 
-    var container = await Container.findOne({ name: req.body.container});
+    var container = await DataContext.Containers.findOne({ name: req.body.container});
     
     // Creating one log.
-    var log = new Log ({
+    var log = new Model.Log ({
         user: req.user._id,
         container: container._id,
         title: req.body.title,
@@ -35,13 +35,12 @@ async (req, res, next) => {
     });
 
     // Saving it to the database.
-    log.save(function(err, result){
-        if (err) {
-            res.json({ status: "error", message: err});
-        } else {
-            res.json({ status: "success", message: "Log saved successfully."});
-        }
-    });
+    try{
+        await DataContext.Logs.save(log);
+        res.json({ status: "success", message: "Log saved successfully."});
+    }catch (err) {
+        res.json({ status: "error", message: err});
+    }
 });
 
 /* GET all logs. */
@@ -70,7 +69,7 @@ router.post('/search', passport.authenticate(['basic', 'all'], {session: false})
         query["user"] = req.user;
 
         //get logs from database
-        var logs = await Log.find(query);
+        var logs = await Model.Log.find(query);
 
         //output the logs to the response
         res.json(logs);
