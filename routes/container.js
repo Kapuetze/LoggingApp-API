@@ -40,14 +40,27 @@ async (req, res, next) => {
     }
 });
 
-/* SEARCH LOGS */
+/* SEARCH */
 router.get('/', passport.authenticate(['basic', 'all'], {session: false}), async (req, res, next) => {
     try {
-        //get logs from database
+        //get containers from database
         var containers = await DataContext.Containers.find({ user: req.user._id });
 
-        //output the logs to the response
+        //output to the response
         res.json(containers);
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching the containers from the server." });
+    }  
+});
+
+/* GET ONE */
+router.get('/:id', passport.authenticate(['basic', 'all'], {session: false}), async (req, res, next) => {
+    try {
+        //get logs from database
+        var container = await DataContext.Containers.findOne({ _id: req.params.id, user: req.user._id });
+
+        //output the logs to the response
+        res.json(container);
     } catch (error) {
         res.status(500).json({ error: "Error fetching the containers from the server." });
     }  
