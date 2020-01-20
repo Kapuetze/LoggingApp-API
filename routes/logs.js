@@ -58,15 +58,13 @@ async (req, res, next) => {
 // 	});	
 // });
 
-/* SEARCH LOGS */
-router.post('/search', passport.authenticate(['basic', 'all'], {session: false}), async (req, res, next) => {
+/* SEARCH LOGS FOR ONE CONTAINER */
+router.post('/search/:id', passport.authenticate(['basic', 'all'], {session: false}), async (req, res, next) => {
     try {
-        query = {};
-        //build query
-        if(req.body !== null){
-            query = req.body;
-        }
-        query["user"] = req.user;
+        query = req.body;
+        
+        //query["user"] = req.user;
+        query["container"] = req.params.id;
 
         //get logs from database
         var logs = await Model.Log.find(query);
@@ -77,5 +75,91 @@ router.post('/search', passport.authenticate(['basic', 'all'], {session: false})
         res.status(500).json({ error: "Error fetching the logs from the server." });
     }  
 });
+
+/* SEARCH LOGS FOR ONE CONTAINER */
+router.get('/labels/:id', passport.authenticate(['basic', 'all'], {session: false}), async (req, res, next) => {
+    try {
+        query = {};
+        //build query
+        if(req.body !== null){
+            query = req.body;
+        }
+        
+        //query["user"] = req.user;
+        query["container"] = req.params.id;
+
+        //get logs from database
+        var logs = await Model.Log.find(query);
+
+        //output the logs to the response
+        res.json(logs);
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching the logs from the server." });
+    }  
+});
+
+/* RETURN POSSIBLE PROPERTIES FOR ONE CONTAINER */
+router.get('/properties/:id', passport.authenticate(['basic', 'all'], {session: false}), async (req, res, next) => {
+    try {
+        query = {};
+        //build query
+        if(req.body !== null){
+            query = req.body;
+        }
+        
+        query["container"] = req.params.id;
+
+        //get logs from database
+        var logs = await Model.Log.find(query);
+
+        var properties = getProperties(logs);
+        
+
+
+        //output the logs to the response
+        res.json(properties);
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching the logs from the server." });
+    }  
+});
+
+function getProperties(logs){
+    var properties = new Array();
+    logs.forEach(log => {
+        properties = parseContentBody(log.toJSON(), new Array(), properties);
+    });
+
+    return properties;
+}
+
+function parseContentBody(content, keys, resultArray){
+
+    var noParseProperties = ['_id', 'id'];
+    var ignoreProperties = ['__v','_bsontype'];
+
+    if (content){
+        Object.keys(content).forEach(function (key, index) {
+
+            if (!ignoreProperties.includes(key)) {
+                keys.push(key);
+                if (typeof content[key] == 'object' && !noParseProperties.includes(key)) {
+                    //console.log(key);
+                    
+                    parseContentBody(content[key], keys, resultArray);
+                }
+                else {
+                    //console.log("keys: " + keys);
+                    var keyString = keys.join(".");
+                    if (!resultArray.includes(keyString)) {
+                        resultArray.push(keyString);
+                    }
+                }
+                keys.pop();
+            }
+        });
+    }
+
+    return resultArray;
+}
 
 module.exports = router;
