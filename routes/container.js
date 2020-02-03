@@ -5,7 +5,7 @@ var router = express.Router();
 var Model = require(gBase_dir + '/dal/models/models.module.js');
 var DataContext = require(gBase_dir + '/dal/repos/datacontext.js');
 
-/* CREATE a new log entry. */
+/* CREATE a new container entry. */
 router.post('/', 
 passport.authenticate(['basic', 'all'], { session: false }), 
 async (req, res, next) => {
@@ -30,6 +30,35 @@ async (req, res, next) => {
         name: req.body.name,
         creationDate: Date.now()
     });
+
+    // Saving it to the database.
+    try{
+        await DataContext.Containers.save(container);
+        res.json({ status: "success", message: "Container saved successfully."});
+    }catch (err) {
+        res.json({ status: "error", message: err});
+    }
+});
+
+/* UPDATE a container entry. */
+router.patch('/:id', 
+passport.authenticate(['basic', 'all'], { session: false }), 
+async (req, res, next) => {
+
+    //validate the container name
+    if (!req.body.name) {
+        res.status(400).json({ status: "error", message: "Please provide a container name."});
+        return;
+    }
+
+    //check if the container name already exists
+    var container = await DataContext.Containers.findOne({ _id: req.params.id, user: req.user._id });
+    if (container == null) {
+        res.status(200).json({ status: "error", message: `A container with id '${req.params.id}' does not exist.`});
+        return;
+    }
+
+    container.name = req.body.name;
 
     // Saving it to the database.
     try{

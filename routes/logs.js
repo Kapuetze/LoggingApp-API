@@ -113,8 +113,6 @@ router.get('/properties/:id', passport.authenticate(['basic', 'all'], {session: 
         var logs = await Model.Log.find(query);
 
         var properties = getProperties(logs);
-        
-
 
         //output the logs to the response
         res.json(properties);
