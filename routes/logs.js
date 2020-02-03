@@ -29,7 +29,7 @@ async (req, res, next) => {
         user: req.user._id,
         container: container._id,
         title: req.body.title,
-        label: req.body.label,
+        labels: req.body.labels,
         content: req.body.content,
         creationDate: Date.now()
     });
