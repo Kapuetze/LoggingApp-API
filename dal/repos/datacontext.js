@@ -20,10 +20,6 @@ class DataContext  {
     get Containers() {
         return this._Containers;
     }
-
-    // static set Logs(logs){};
-    // static set Users(users){};
-    // static set Containers(containers){};
 }
 
 module.exports = new DataContext();

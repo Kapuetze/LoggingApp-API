@@ -12,7 +12,7 @@ async (req, res, next) => {
 
     //validate the container name
     if (!req.body.container) {
-        res.status(400).json({ status: "error", message: "Please provide the id of a valid container."});
+        res.status(400).json({ status: "error", message: "Please provide the name of a valid container."});
         return;
     }
 
@@ -42,21 +42,6 @@ async (req, res, next) => {
         res.json({ status: "error", message: err});
     }
 });
-
-/* GET all logs. */
-// router.get('/', 
-// passport.authenticate(['basic', 'all'], { session: false }),    
-// function(req, res, next) {
-
-// 	//console.log(req.user);
-// 	Log.find({ user: req.user }, function (err, logs) {
-//         if(err){
-//             res.json({ status: "error", message: err});
-//         }else{
-//             res.json(logs);
-//         }
-// 	});	
-// });
 
 /* SEARCH LOGS FOR ONE CONTAINER */
 router.post('/search/:id', passport.authenticate(['basic', 'all'], {session: false}), async (req, res, next) => {
@@ -121,6 +106,7 @@ router.get('/properties/:id', passport.authenticate(['basic', 'all'], {session: 
     }  
 });
 
+//return a list of properties that are available for the contianer
 function getProperties(logs){
     var properties = new Array();
     logs.forEach(log => {
@@ -130,6 +116,7 @@ function getProperties(logs){
     return properties;
 }
 
+//loop through all properties and create a list iteratively
 function parseContentBody(content, keys, resultArray){
 
     var noParseProperties = ['_id', 'id'];

@@ -1,6 +1,7 @@
+//common database operations
+//should be self explanatory
 class BaseRepository 
 {
-
     constructor(model) {
       this.model = model;
     }
